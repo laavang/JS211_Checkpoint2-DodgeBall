@@ -1,0 +1,17 @@
+#blue-button {
+    color: white;
+    background-color: blue;
+}
+
+#red-button {
+    color: white;
+    background-color: red;
+}
+
+#blue > li {
+    color: blue;
+}
+
+#red > li {
+    color: red;
+}
