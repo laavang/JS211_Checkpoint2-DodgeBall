@@ -1,82 +1,229 @@
+'use strict';
+
+const assert = require('assert');
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 const arrOfPeople = [
     {
-      id: 2,
-      name: "Charles Young",
-      age: 55,
-      skillSet: "welding",
-      placeBorn: "Omaha, Nebraska"
+        id: 2,
+        name: "Charles Young",
+        age: 55,
+        skillSet: "welding",
+        placeBorn: "Omaha, Nebraska"
     },
     {
-      id: 3,
-      name: "Judy Twilight",
-      age: 35,
-      skillSet: "fishing",
-      placeBorn: "Louisville, Kentucky"
+        id: 3,
+        name: "Judy Twilight",
+        age: 35,
+        skillSet: "fishing",
+        placeBorn: "Louisville, Kentucky"
     },
     {
-      id: 4,
-      name: "Cynthia Doolittle",
-      age: 20,
-      skillSet: "tic tac toe",
-      placeBorn: "Pawnee, Texas"
+        id: 4,
+        name: "Cynthia Doolittle",
+        age: 20,
+        skillSet: "tic tac toe",
+        placeBorn: "Pawnee, Texas"
     },
     {
-      id: 5,
-      name: "John Willouby",
-      age: 28,
-      skillSet: "pipe fitting",
-      placeBorn: "New York, New York"
+        id: 5,
+        name: "John Willouby",
+        age: 28,
+        skillSet: "pipe fitting",
+        placeBorn: "New York, New York"
     },
     {
-      id: 6,
-      name: "Stan Honest",
-      age: 20,
-      skillSet: "boom-a-rang throwing",
-      placeBorn: "Perth, Australia"
+        id: 6,
+        name: "Stan Honest",
+        age: 20,
+        skillSet: "boom-a-rang throwing",
+        placeBorn: "Perth, Australia"
     },
     {
-      id: 7,
-      name: "Mia Watu",
-      age: 17,
-      skillSet: "acrobatics",
-      placeBorn: "Los Angeles, California"
+        id: 7,
+        name: "Mia Watu",
+        age: 17,
+        skillSet: "acrobatics",
+        placeBorn: "Los Angeles, California"
     },
     {
-      id: 8,
-      name: "Walter Cole",
-      age: 32,
-      skillSet: "jump rope",
-      placeBorn: "New Orleans, Louisiana"
+        id: 8,
+        name: "Walter Cole",
+        age: 32,
+        skillSet: "jump rope",
+        placeBorn: "New Orleans, Louisiana"
     },
-  ]
-  
-  const listOfPlayers = []
-  const blueTeam = []
-  const redTeam = []
-  
-  class player {
-    constructor(){}
-  }
-  class blueTeammate {
-    constructor(){}
-  }
-  class redTeammate {
-    constructor(){}
-  }
-  
-  const listPeopleChoices = () => {
+]
+
+const listOfPlayers = [];
+const blueTeam = [];
+const redTeam = [];
+
+
+
+class player {
+    constructor(id, name, age, skillSet, placeBorn, canThrowBall, canDodgeBall, hasPaid, isHealthy, yearsExperience) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.skillSet = skillSet;
+        this.placeBorn = placeBorn;
+        this.canThrowBall = canThrowBall;
+        this.canDodgeBall = canDodgeBall;
+        this.hasPaid = hasPaid;
+        this.isHealthy = isHealthy;
+        this.yearsExperience = yearsExperience;
+    }
+}
+class blueTeammate extends player {
+    constructor(id, name, age, skillSet, placeBorn, canThrowBall, canDodgeBall, hasPaid, isHealthy, yearsExperience, color, mascot) {
+        super(id, name, age, skillSet, placeBorn, canThrowBall, canDodgeBall, hasPaid, isHealthy, yearsExperience);
+        this.color = color;
+        this.mascot = mascot;
+    }
+}
+class redTeammate extends player {
+    constructor(id, name, age, skillSet, placeBorn, canThrowBall, canDodgeBall, hasPaid, isHealthy, yearsExperience, color, mascot) {
+        super(id, name, age, skillSet, placeBorn, canThrowBall, canDodgeBall, hasPaid, isHealthy, yearsExperience);
+        this.color = color;
+        this.mascot = mascot;
+    }
+}
+
+
+
+const listPeopleChoices = () => {
+    document.getElementById("generate-people").remove();
     const listElement = document.getElementById('people')
     arrOfPeople.map(person => {
-      const li = document.createElement("li")
-      const button = document.createElement("button")
-      button.innerHTML = "Make Player"
-      button.addEventListener('click', function() {makePlayer(person.id)} )
-      li.appendChild(button)
-      li.appendChild(document.createTextNode(person.name + " - " + person.skillSet))
-      listElement.append(li)
+        const li = document.createElement("li")
+        li.setAttribute("id", `person-${person.id}`)
+        const button = document.createElement("button")
+        button.innerHTML = "Make Player"
+        button.addEventListener('click', function () { makePlayer(person.id) })
+        li.appendChild(button)
+        li.appendChild(document.createTextNode(person.name + " - " + person.skillSet))
+        listElement.append(li)
     })
+}
+
+const makePlayer = (id) => {
+    // console.log(`li ${id} was clicked!`)
+    document.getElementById(`person-${id}`).remove()
+
+    let selectedPlayer;
+    for (i = 0; i < arrOfPeople.length; i++) {
+        if (arrOfPeople[i].id === id) {
+            selectedPlayer = arrOfPeople[i];
+        }
+    }
+
+    const unassignedPlayer = new player(selectedPlayer.id, selectedPlayer.name, selectedPlayer.age, selectedPlayer.skillSet, selectedPlayer.placeBorn);
+    listOfPlayers.push(unassignedPlayer);
+    console.log(unassignedPlayer);
+    console.log(listOfPlayers);
+
+    const listElement = document.getElementById("players");
+    const li = document.createElement("li");
+    li.setAttribute("id", `person-${selectedPlayer.id}`)
+
+    const buttonAssignRed = document.createElement("button");
+    buttonAssignRed.innerHTML = "Assign to Red Team";
+    buttonAssignRed.setAttribute("id", "red-button");
+    buttonAssignRed.addEventListener('click', function () { assignRedTeammate(id) });
+
+    const buttonAssignBlue = document.createElement("button");
+    buttonAssignBlue.innerHTML = "Assign to Blue Team";
+    buttonAssignBlue.setAttribute("id", "blue-button");
+    buttonAssignBlue.addEventListener('click', function () { assignBlueTeammate(id) });
+
+
+    li.appendChild(buttonAssignRed);
+    li.appendChild(buttonAssignBlue);
+    li.appendChild(document.createTextNode(selectedPlayer.name + " - " + selectedPlayer.skillSet));
+
+    listElement.append(li);
+
+}
+
+const assignRedTeammate = (id) => {
+    document.getElementById(`person-${id}`).remove();
+
+    let selectedPlayer;
+    for (i = 0; i < arrOfPeople.length; i++) {
+        if (arrOfPeople[i].id === id) {
+            selectedPlayer = arrOfPeople[i];
+        }
+    }
+
+    const assignedPlayer = new redTeammate(selectedPlayer.id, selectedPlayer.name, selectedPlayer.age, selectedPlayer.skillSet, selectedPlayer.placeBorn, null, null, null, null, null, "red", "bulls");
+    redTeam.push(assignedPlayer);
+    console.log(redTeam);
+
+    const listElement = document.getElementById("red");
+    const li = document.createElement("li");
+    li.setAttribute("id", `person-${selectedPlayer.id}`)
+    li.appendChild(document.createTextNode(selectedPlayer.name + " - " + selectedPlayer.skillSet));
+    listElement.append(li);
+}
+
+const assignBlueTeammate = (id) => {
+    document.getElementById(`person-${id}`).remove()
+
+    let selectedPlayer;
+    for (i = 0; i < arrOfPeople.length; i++) {
+        if (arrOfPeople[i].id === id) {
+            selectedPlayer = arrOfPeople[i];
+        }
+    };
+
+    const assignedPlayer = new blueTeammate(selectedPlayer.id, selectedPlayer.name, selectedPlayer.age, selectedPlayer.skillSet, selectedPlayer.placeBorn, null, null, null, null, null, "blue", "bluedevils");
+    blueTeam.push(assignedPlayer);
+    console.log(blueTeam);
+
+    const listElement = document.getElementById("blue");
+    const li = document.createElement("li");
+    li.setAttribute("id", `person-${selectedPlayer.id}`)
+    li.appendChild(document.createTextNode(selectedPlayer.name + " - " + selectedPlayer.skillSet));
+    listElement.append(li);
+
+}
+
+
+
+// Tests
+if (typeof describe === 'function') {
+    describe('Game', () => {
+      it('should have a board', () => {
+        assert.equal(game.board.constructor.name, 'Board');
+      });
+      it('board should have 24 checkers', () => {
+        assert.equal(game.board.checkers.length, 24);
+      });
+    });
+  
+    describe('Game.moveChecker()', () => {
+      it('should move a checker', () => {
+        assert(!game.board.grid[4][1]);
+        game.moveChecker('50', '41');
+        assert(game.board.grid[4][1]);
+        game.moveChecker('21', '30');
+        assert(game.board.grid[3][0]);
+        game.moveChecker('52', '43');
+        assert(game.board.grid[4][3]);
+      });
+      it('should be able to jump over and kill another checker', () => {
+        game.moveChecker('30', '52');
+        assert(game.board.grid[5][2]);
+        assert(!game.board.grid[4][1]);
+        assert.equal(game.board.checkers.length, 23);
+      });
+    });
+  } else {
+    getPrompt();
   }
   
-  const makePlayer = (id) => {
-    console.log(`li ${id} was clicked!`)
-  }
