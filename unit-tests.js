@@ -1,4 +1,14 @@
 
+// GUI-related code removed for js testing
+
+'use strict';
+
+const assert = require('assert');
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 
 const arrOfPeople = [
@@ -90,23 +100,7 @@ class redTeammate extends player {
 
 
 
-const listPeopleChoices = () => {
-    document.getElementById("generate-people").remove();
-    const listElement = document.getElementById('people')
-    arrOfPeople.map(person => {
-        const li = document.createElement("li")
-        li.setAttribute("id", `person-${person.id}`)
-        const button = document.createElement("button")
-        button.innerHTML = "Make Player"
-        button.addEventListener('click', function () { makePlayer(person.id) })
-        li.appendChild(button)
-        li.appendChild(document.createTextNode(person.name + " - " + person.skillSet))
-        listElement.append(li)
-    })
-}
-
 const makePlayer = (id) => {
-    document.getElementById(`person-${id}`).remove()
 
     let selectedPlayer;
     for (let i = 0; i < arrOfPeople.length; i++) {
@@ -118,31 +112,9 @@ const makePlayer = (id) => {
     const unassignedPlayer = new player(selectedPlayer.id, selectedPlayer.name, selectedPlayer.age, selectedPlayer.skillSet, selectedPlayer.placeBorn);
     listOfPlayers.push(unassignedPlayer);
 
-    const listElement = document.getElementById("players");
-    const li = document.createElement("li");
-    li.setAttribute("id", `person-${selectedPlayer.id}`)
-
-    const buttonAssignRed = document.createElement("button");
-    buttonAssignRed.innerHTML = "Assign to Red Team";
-    buttonAssignRed.setAttribute("id", "red-button");
-    buttonAssignRed.addEventListener('click', function () { assignRedTeammate(id) });
-
-    const buttonAssignBlue = document.createElement("button");
-    buttonAssignBlue.innerHTML = "Assign to Blue Team";
-    buttonAssignBlue.setAttribute("id", "blue-button");
-    buttonAssignBlue.addEventListener('click', function () { assignBlueTeammate(id) });
-
-
-    li.appendChild(buttonAssignRed);
-    li.appendChild(buttonAssignBlue);
-    li.appendChild(document.createTextNode(selectedPlayer.name + " - " + selectedPlayer.skillSet));
-
-    listElement.append(li);
-
 }
 
 const assignRedTeammate = (id) => {
-    document.getElementById(`person-${id}`).remove();
 
     let selectedPlayer;
     for (let i = 0; i < arrOfPeople.length; i++) {
@@ -154,15 +126,9 @@ const assignRedTeammate = (id) => {
     const assignedPlayer = new redTeammate(selectedPlayer.id, selectedPlayer.name, selectedPlayer.age, selectedPlayer.skillSet, selectedPlayer.placeBorn, null, null, null, null, null, "red", "bulls");
     redTeam.push(assignedPlayer);
 
-    const listElement = document.getElementById("red");
-    const li = document.createElement("li");
-    li.setAttribute("id", `person-${selectedPlayer.id}`)
-    li.appendChild(document.createTextNode(selectedPlayer.name + " - " + selectedPlayer.skillSet));
-    listElement.append(li);
 }
 
 const assignBlueTeammate = (id) => {
-    document.getElementById(`person-${id}`).remove()
 
     let selectedPlayer;
     for (let i = 0; i < arrOfPeople.length; i++) {
@@ -174,12 +140,63 @@ const assignBlueTeammate = (id) => {
     const assignedPlayer = new blueTeammate(selectedPlayer.id, selectedPlayer.name, selectedPlayer.age, selectedPlayer.skillSet, selectedPlayer.placeBorn, null, null, null, null, null, "blue", "bluedevils");
     blueTeam.push(assignedPlayer);
 
-    const listElement = document.getElementById("blue");
-    const li = document.createElement("li");
-    li.setAttribute("id", `person-${selectedPlayer.id}`)
-    li.appendChild(document.createTextNode(selectedPlayer.name + " - " + selectedPlayer.skillSet));
-    listElement.append(li);
+}
 
+
+
+// Tests
+if (typeof describe === 'function') {
+
+
+    // person becomes a player
+
+    describe('makePlayer()', () => {
+        it('create a player', () => {
+            makePlayer(2);
+            assert.equal(listOfPlayers[0].id, 2);
+            const testPlayer = new player(99, "Testy McTesterson", 29, "Acroyoga", "St. Charles, IL");
+            assert.equal(testPlayer.age, 29);
+
+        });
+        it('add player to listOfPlayers', () => {
+            assert.equal(listOfPlayers.length, 1);
+        });
+    });
+
+    // player becomes a teammate - red team
+
+    describe('assignBlueTeammate()', () => {
+        it('make a new teammate', () => {
+            makePlayer(2);
+            assignBlueTeammate(2);
+            assert.equal(blueTeam[0].id, 2);
+            const testBlueTeamPlayer = new blueTeammate(99, "Testy McTesterson", 29, "Acroyoga", "St. Charles, IL", null, null, null, null, null, "blue", "bluedevils");
+            assert.equal(testBlueTeamPlayer.color, "blue");
+
+        });
+        it('add teammate to blueTeam', () => {
+            assert.equal(blueTeam.length, 1);
+        });
+    });
+
+    // player becomes a teammate - red team
+
+    describe('assignRedTeammate()', () => {
+        it('make a new teammate', () => {
+            makePlayer(2);
+            assignRedTeammate(2);
+            assert.equal(redTeam[0].id, 2);
+            const testRedTeamPlayer = new redTeammate(99, "Testy McTesterson", 29, "Acroyoga", "St. Charles, IL", null, null, null, null, null, "red", "bulls");
+            assert.equal(testRedTeamPlayer.color, "red");
+
+        });
+        it('add teammate to redTeam', () => {
+            assert.equal(redTeam.length, 1);
+        });
+    });
+
+} else {
+    getPrompt();
 }
 
 
