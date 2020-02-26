@@ -1,5 +1,7 @@
 # JS211_Checkpoint2-DodgeBall
 
+// ** NOTE THAT UNIT TESTS ARE IN SEPERATE UNIT_TESTS.JS FILE
+
 CODE PLAN:
 
 App will need to...
